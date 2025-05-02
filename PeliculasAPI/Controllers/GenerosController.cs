@@ -19,10 +19,10 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet("{id:int}")] // api/generos/500
-        public ActionResult<Genero> Get(int id)
+        public async Task<ActionResult<Genero>> Get(int id)
         {
             var repositorio = new RepositorioEnMemoria();
-            var genero = repositorio.ObtenerPorId(id);
+            var genero = await repositorio.ObtenerPorId(id);
 
             if (genero is null)
             {
@@ -33,10 +33,10 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet("{nombre}")] // api/generos/Felipe
-        public Genero? Get(string nombre)
+        public async Task<Genero?> Get(string nombre)
         {   
             var repositorio = new RepositorioEnMemoria();
-            var genero = repositorio.ObtenerPorId(1);
+            var genero = await repositorio.ObtenerPorId(1);
             return genero;
         }
 
