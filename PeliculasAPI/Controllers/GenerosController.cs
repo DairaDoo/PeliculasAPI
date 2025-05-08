@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using PeliculasAPI.Entidades;
 
 namespace PeliculasAPI.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class GenerosController: ControllerBase
     {
 
         [HttpGet]
         [HttpGet("listado")]
         [HttpGet("/listadoGeneros")]
+        [OutputCache]
         public List<Genero> Get()
         {
             var repositorio = new RepositorioEnMemoria();   
@@ -19,6 +22,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet("{id:int}")] // api/generos/500
+        [OutputCache]
         public async Task<ActionResult<Genero>> Get(int id)
         {
             var repositorio = new RepositorioEnMemoria();
@@ -41,7 +45,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPost]
-        public void Post()
+        public void Post([FromBody] Genero genero)
         {
 
         }
