@@ -26,6 +26,11 @@ namespace PeliculasAPI
             return _generos.FirstOrDefault(g => g.Id == id);
         }
 
+        public bool Existe(string nombre)
+        {
+            return _generos.Any(g => g.Nombre == nombre);
+        }
+
         // Este es un ejemplo de que si quiero devolver una función asyn que retorna void, no pongo Task<void>, si no que Task solo.
         //private async Task LoguearEnConsola()
         //{
