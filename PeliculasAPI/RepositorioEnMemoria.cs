@@ -25,5 +25,11 @@ namespace PeliculasAPI
             await Task.Delay(TimeSpan.FromSeconds(3));
             return _generos.FirstOrDefault(g => g.Id == id);
         }
+
+        // Este es un ejemplo de que si quiero devolver una función asyn que retorna void, no pongo Task<void>, si no que Task solo.
+        //private async Task LoguearEnConsola()
+        //{
+             // logueamos en consola
+        //}
     }
 }
