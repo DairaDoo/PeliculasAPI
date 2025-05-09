@@ -8,6 +8,12 @@ namespace PeliculasAPI.Controllers
     [ApiController]
     public class GenerosController: ControllerBase
     {
+        private readonly RepositorioEnMemoria repositorio;
+
+        public GenerosController(RepositorioEnMemoria repositorio)
+        {
+            this.repositorio = repositorio;
+        }
 
         [HttpGet]
         [HttpGet("listado")]
@@ -15,7 +21,6 @@ namespace PeliculasAPI.Controllers
         [OutputCache]
         public List<Genero> Get()
         {
-            var repositorio = new RepositorioEnMemoria();   
             var generos = repositorio.ObtenerTodosLosGeneros();
 
             return generos;
@@ -25,7 +30,6 @@ namespace PeliculasAPI.Controllers
         [OutputCache]
         public async Task<ActionResult<Genero>> Get(int id)
         {
-            var repositorio = new RepositorioEnMemoria();
             var genero = await repositorio.ObtenerPorId(id);
 
             if (genero is null)
@@ -39,7 +43,6 @@ namespace PeliculasAPI.Controllers
         [HttpGet("{nombre}")] // api/generos/Felipe
         public async Task<Genero?> Get(string nombre)
         {   
-            var repositorio = new RepositorioEnMemoria();
             var genero = await repositorio.ObtenerPorId(1);
             return genero;
         }
@@ -47,7 +50,6 @@ namespace PeliculasAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Genero genero)
         {
-            var repositorio = new RepositorioEnMemoria();
             var yaExisteUnGeneroConDichoNombre = repositorio.Existe(genero.Nombre);
 
             if (yaExisteUnGeneroConDichoNombre)
