@@ -2,16 +2,17 @@
 
 namespace PeliculasAPI
 {
-    public class RepositorioEnMemoria: IRepositorio
+    public class RepositorioSQLServer : IRepositorio
     {
+
         private List<Genero> _generos;
 
-        public RepositorioEnMemoria()
+        public RepositorioSQLServer()
         {
             _generos = new List<Genero>
             {
-                new Genero { Id = 1, Nombre = "Comedia" },
-                new Genero { Id = 2, Nombre = "Drama" }
+                new Genero{Id = 1, Nombre = "Comedia SQL"},
+                new Genero{Id = 2, Nombre = "Drama SQL"}
             };
         }
 
@@ -30,11 +31,5 @@ namespace PeliculasAPI
         {
             return _generos.Any(g => g.Nombre == nombre);
         }
-
-        // Este es un ejemplo de que si quiero devolver una función asyn que retorna void, no pongo Task<void>, si no que Task solo.
-        //private async Task LoguearEnConsola()
-        //{
-             // logueamos en consola
-        //}
     }
 }

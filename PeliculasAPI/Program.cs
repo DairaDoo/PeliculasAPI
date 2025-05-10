@@ -14,7 +14,8 @@ builder.Services.AddOutputCache(opciones =>
     opciones.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(15);
 });
 
-builder.Services.AddTransient<RepositorioEnMemoria>();
+// IRepositorio es el servicio, RepositorioEnMemoria es la implementación del servicio.
+builder.Services.AddTransient<IRepositorio, RepositorioSQLServer>();
 
 var app = builder.Build();
 
