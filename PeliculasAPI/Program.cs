@@ -17,6 +17,11 @@ builder.Services.AddOutputCache(opciones =>
 // IRepositorio es el servicio, RepositorioEnMemoria es la implementación del servicio.
 builder.Services.AddTransient<IRepositorio, RepositorioSQLServer>();
 
+builder.Services.AddTransient<ServicioTransient>();
+builder.Services.AddScoped<ServicioScoped>();
+builder.Services.AddSingleton<ServicioSingleton>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
