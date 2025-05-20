@@ -20,6 +20,11 @@ namespace PeliculasAPI
             return _generos;
         }
 
+        public void Crear(Genero genero)
+        {
+            _generos.Add(genero);
+        }
+
         public async Task<Genero?> ObtenerPorId(int id)
         {
             await Task.Delay(TimeSpan.FromSeconds(3));

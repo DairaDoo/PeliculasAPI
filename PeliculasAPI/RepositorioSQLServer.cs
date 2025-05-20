@@ -31,5 +31,10 @@ namespace PeliculasAPI
         {
             return _generos.Any(g => g.Nombre == nombre);
         }
+
+        public void Crear(Genero genero)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
