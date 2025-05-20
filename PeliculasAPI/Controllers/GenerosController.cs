@@ -14,13 +14,15 @@ namespace PeliculasAPI.Controllers
         private readonly ServicioScoped scoped1;
         private readonly ServicioScoped scoped2;
         private readonly ServicioSingleton singleton;
+        private readonly IOutputCacheStore outputCacheStore;
+        private const string cacheTag = "generos"; // proposito de simplificar el poner el tag y evitar errores
 
         public GenerosController(IRepositorio repositorio,
             ServicioTransient transient1,
             ServicioTransient transient2,
             ServicioScoped scoped1,
             ServicioScoped scoped2,
-            ServicioSingleton singleton)
+            ServicioSingleton singleton, IOutputCacheStore outputCacheStore)
         {
             this.repositorio = repositorio;
             this.transient1 = transient1;
@@ -28,6 +30,7 @@ namespace PeliculasAPI.Controllers
             this.scoped1 = scoped1;
             this.scoped2 = scoped2;
             this.singleton = singleton;
+            this.outputCacheStore = outputCacheStore;
         }
 
         [HttpGet("servicios-tiempos-de-vida")]
@@ -46,7 +49,7 @@ namespace PeliculasAPI.Controllers
         [HttpGet]
         [HttpGet("listado")]
         [HttpGet("/listadoGeneros")]
-        [OutputCache]
+        [OutputCache(Tags = [cacheTag])]
         public List<Genero> Get()
         {
             var generos = repositorio.ObtenerTodosLosGeneros();
@@ -55,7 +58,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet("{id:int}")] // api/generos/500
-        [OutputCache]
+        [OutputCache(Tags = [cacheTag])]
         public async Task<ActionResult<Genero>> Get(int id)
         {
             var genero = await repositorio.ObtenerPorId(id);
@@ -76,7 +79,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Genero genero)
+        public async Task<IActionResult> Post([FromBody] Genero genero)
         {
             var yaExisteUnGeneroConDichoNombre = repositorio.Existe(genero.Nombre);
 
@@ -86,6 +89,7 @@ namespace PeliculasAPI.Controllers
             }
 
             repositorio.Crear(genero);
+            await outputCacheStore.EvictByTagAsync(cacheTag, default);
 
             return Ok();
 
