@@ -14,13 +14,6 @@ builder.Services.AddOutputCache(opciones =>
     opciones.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(60); // se guarda el caché
 });
 
-// IRepositorio es el servicio, RepositorioEnMemoria es la implementación del servicio.
-builder.Services.AddSingleton<IRepositorio, RepositorioEnMemoria>();
-
-builder.Services.AddTransient<ServicioTransient>();
-builder.Services.AddScoped<ServicioScoped>();
-builder.Services.AddSingleton<ServicioSingleton>();
-
 
 var app = builder.Build();
 
