@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PeliculasAPI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationDbContext>(opciones => 
+    opciones.UseSqlServer("name=DefaultConnection"));
 
 builder.Services.AddOutputCache(opciones =>
 {
