@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PeliculasAPI.Entidades;
 
 namespace PeliculasAPI
 {
@@ -7,5 +8,7 @@ namespace PeliculasAPI
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        public DbSet<Genero> Generos { get; set; }
     }
 }
