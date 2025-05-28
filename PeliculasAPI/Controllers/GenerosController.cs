@@ -9,11 +9,13 @@ namespace PeliculasAPI.Controllers
     public class GenerosController: ControllerBase
     {
         private readonly IOutputCacheStore outputCacheStore;
+        private readonly ApplicationDbContext context;
         private const string cacheTag = "generos"; // proposito de simplificar el poner el tag y evitar errores
 
-        public GenerosController(IOutputCacheStore outputCacheStore)
+        public GenerosController(IOutputCacheStore outputCacheStore, ApplicationDbContext context)
         {
             this.outputCacheStore = outputCacheStore;
+            this.context = context;
         }
 
         [HttpGet]
@@ -24,7 +26,7 @@ namespace PeliculasAPI.Controllers
                 new Genero { Id = 2, Nombre = "Acción"} };
         }
 
-        [HttpGet("{id:int}")] // api/generos/500
+        [HttpGet("{id:int}", Name= "ObtenerGeneroPorId")] // api/generos/500
         [OutputCache(Tags = [cacheTag])]
         public async Task<ActionResult<Genero>> Get(int id)
         {
@@ -34,7 +36,9 @@ namespace PeliculasAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Genero genero)
         {
-            throw new NotImplementedException();
+            context.Add(genero);
+            await context.SaveChangesAsync();
+            return CreatedAtRoute("ObtenerGeneroPorId", new {id = genero.Id }, genero);
         }
 
         [HttpPut]
