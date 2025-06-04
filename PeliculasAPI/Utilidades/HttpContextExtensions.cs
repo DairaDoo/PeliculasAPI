@@ -7,7 +7,7 @@ namespace PeliculasAPI.Utilidades
         public async static Task InsertarParametrosPaginacionEnCabecera<T>(this HttpContext httpContext,
             IQueryable<T> queryable)
         {
-            if (httpContext is null)
+            if (httpContext is null) 
             {
                 throw new ArgumentNullException(nameof(httpContext));
             }
