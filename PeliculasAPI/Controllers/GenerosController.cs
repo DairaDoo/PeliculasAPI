@@ -27,7 +27,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        [OutputCache(Tags = [cacheTag])]
+        [OutputCache(Tags = [cacheTag])] 
         public async Task<List<GeneroDTO>> Get([FromQuery] PaginacionDTO paginacion)
         {
             var queryable = context.Generos;
@@ -42,7 +42,16 @@ namespace PeliculasAPI.Controllers
         [OutputCache(Tags = [cacheTag])]
         public async Task<ActionResult<GeneroDTO>> Get(int id)
         {
-            throw new NotImplementedException();
+            var genero = await context.Generos
+                .ProjectTo<GeneroDTO>(mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (genero is null)
+            {
+                return NotFound();
+            }
+
+            return genero;
         }
 
         [HttpPost]
@@ -51,13 +60,31 @@ namespace PeliculasAPI.Controllers
             var genero = mapper.Map<Genero>(generoCreacionDTO);
             context.Add(genero);
             await context.SaveChangesAsync();
+            await outputCacheStore.EvictByTagAsync(cacheTag, default); // limpiamos el caché al crear genero
             return CreatedAtRoute("ObtenerGeneroPorId", new {id = genero.Id }, genero);
         }
 
-        [HttpPut]
-        public void Put()
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] GeneroCreacionDTO generoCreacionDTO)
         {
-            throw new NotImplementedException();
+            var generoExiste = await context.Generos.AnyAsync(g => g.Id == id);
+
+            // si no existe devolvemos not found
+            if (!generoExiste)
+            {
+                return NotFound();
+            }
+
+            var genero = mapper.Map<Genero>(generoCreacionDTO);
+            genero.Id = id;
+
+            context.Update(genero);
+            await context.SaveChangesAsync();
+            await outputCacheStore.EvictByTagAsync(cacheTag, default); // limpiamos el caché al actualizar genero
+
+            return NoContent();
+
+
         }
 
         [HttpDelete]
