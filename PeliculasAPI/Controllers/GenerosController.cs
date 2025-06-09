@@ -90,7 +90,7 @@ namespace PeliculasAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            // borra todos los generos que tengan ese ID (en este caso siempre debería ser 1)
+            // borra todos los generos que tengan e se ID (en este caso siempre debería ser 1)
             var registrosBorrados = await context.Generos.Where(g => g.Id == id).ExecuteDeleteAsync();
 
             if (registrosBorrados == 0)
