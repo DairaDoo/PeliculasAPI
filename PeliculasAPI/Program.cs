@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI;
+using PeliculasAPI.Servicios;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,9 @@ builder.Services.AddCors(opciones =>
         .WithExposedHeaders("cantidad-total-registros");
     });
 });
+
+// Registramos servicios para subir imagenes en Azure Storage Account
+builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosAzure>();
 
 var app = builder.Build();
 
