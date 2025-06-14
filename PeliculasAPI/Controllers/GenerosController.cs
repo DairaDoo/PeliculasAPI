@@ -87,10 +87,20 @@ namespace PeliculasAPI.Controllers
 
         }
 
-        [HttpDelete]
-        public void Delete()
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            // borra todos los generos que tengan e se ID (en este caso siempre debería ser 1)
+            var registrosBorrados = await context.Generos.Where(g => g.Id == id).ExecuteDeleteAsync();
+
+            if (registrosBorrados == 0)
+            {
+                return NotFound();
+            }
+
+            // limpiamos el caché ya que hicimos un cambio en la base de datos.
+            await outputCacheStore.EvictByTagAsync(cacheTag, default);
+            return NoContent();
         }
 
     }
