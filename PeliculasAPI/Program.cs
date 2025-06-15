@@ -32,8 +32,9 @@ builder.Services.AddCors(opciones =>
     });
 });
 
-// Registramos servicios para subir imagenes en Azure Storage Account
-builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosAzure>();
+// Registramos servicios para subir imagenes en Azure Storage Account o Localmente (Simplemente cambiamos la implementación)
+builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -43,6 +44,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+// middleware para servir archivos estáticos (se usa con imagenes en este caso)
+app.UseStaticFiles();
 
 app.UseCors();
 
