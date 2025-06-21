@@ -38,16 +38,8 @@ namespace PeliculasAPI.Controllers
         [OutputCache(Tags = [cacheTag])]
         public async Task<ActionResult<GeneroDTO>> Get(int id)
         {
-            var genero = await context.Generos
-                .ProjectTo<GeneroDTO>(mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(g => g.Id == id);
+            return await Get<Genero, GeneroDTO>(id); // usamos el método genérico de la clase base
 
-            if (genero is null)
-            {
-                return NotFound();
-            }
-
-            return genero;
         }
 
         [HttpPost]
