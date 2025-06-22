@@ -23,7 +23,7 @@ namespace PeliculasAPI.Controllers
 
         public ActoresController(ApplicationDbContext context, IMapper mapper, IOutputCacheStore outputCacheStore,
             IAlmacenadorArchivos almacenadorArchivos)  
-            :base(context, mapper) // pasamos estos datos a la clase base
+            :base(context, mapper, outputCacheStore, cacheTag) // pasamos estos datos a la clase base
         {
             this.context = context;
             this.mapper = mapper;
@@ -92,15 +92,7 @@ namespace PeliculasAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var registrosBorrados = await context.Actores.Where(a => a.Id == id).ExecuteDeleteAsync();
-
-            if (registrosBorrados == 0)
-            {
-                return NotFound();
-            }
-
-            await outputCacheStore.EvictByTagAsync(cacheTag, default);
-            return NoContent();
+            return await Delete<Actor>(id); // usamos el método genérico de la clase base
         }
     }
 }

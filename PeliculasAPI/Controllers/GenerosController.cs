@@ -20,7 +20,7 @@ namespace PeliculasAPI.Controllers
 
         public GenerosController(IOutputCacheStore outputCacheStore, ApplicationDbContext context, 
             IMapper mapper)
-            :base(context, mapper) // pasamos estos datos a la clase base
+            :base(context, mapper, outputCacheStore, cacheTag) // pasamos estos datos a la clase base
         {
             this.outputCacheStore = outputCacheStore;
             this.context = context;
@@ -45,32 +45,14 @@ namespace PeliculasAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] GeneroCreacionDTO generoCreacionDTO)
         {
-            var genero = mapper.Map<Genero>(generoCreacionDTO);
-            context.Add(genero);
-            await context.SaveChangesAsync();
-            await outputCacheStore.EvictByTagAsync(cacheTag, default); // limpiamos el caché al crear genero
-            return CreatedAtRoute("ObtenerGeneroPorId", new {id = genero.Id }, genero);
+            return await Post<GeneroCreacionDTO, Genero, GeneroDTO>(generoCreacionDTO, "ObtenerGeneroPorId");
+
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Put(int id, [FromBody] GeneroCreacionDTO generoCreacionDTO)
         {
-            var generoExiste = await context.Generos.AnyAsync(g => g.Id == id);
-
-            // si no existe devolvemos not found
-            if (!generoExiste)
-            {
-                return NotFound();
-            }
-
-            var genero = mapper.Map<Genero>(generoCreacionDTO);
-            genero.Id = id;
-
-            context.Update(genero);
-            await context.SaveChangesAsync();
-            await outputCacheStore.EvictByTagAsync(cacheTag, default); // limpiamos el caché al actualizar genero
-
-            return NoContent();
+            return await Put<GeneroCreacionDTO, Genero>(id, generoCreacionDTO);
 
 
         }
@@ -78,17 +60,8 @@ namespace PeliculasAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            // borra todos los generos que tengan e se ID (en este caso siempre debería ser 1)
-            var registrosBorrados = await context.Generos.Where(g => g.Id == id).ExecuteDeleteAsync();
-
-            if (registrosBorrados == 0)
-            {
-                return NotFound();
-            }
-
-            // limpiamos el caché ya que hicimos un cambio en la base de datos.
-            await outputCacheStore.EvictByTagAsync(cacheTag, default);
-            return NoContent();
+            return await Delete<Genero>(id);
+           
         }
 
     }
