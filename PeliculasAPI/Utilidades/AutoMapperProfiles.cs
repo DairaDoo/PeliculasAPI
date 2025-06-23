@@ -18,7 +18,7 @@ namespace PeliculasAPI.Utilidades
         {
             CreateMap<Cine, CineDTO>()
                 .ForMember(x => x.Latitud, cine => cine.MapFrom(p => p.Ubicacion.Y))
-                .ForMember(x => x.Latitud, cine => cine.MapFrom(p => p.Ubicacion.X));
+                .ForMember(x => x.Longitud, cine => cine.MapFrom(p => p.Ubicacion.X));
 
             CreateMap<CineCreacionDTO, Cine>()
                 .ForMember(x => x.Ubicacion, cineDTO => cineDTO.MapFrom(p => 
