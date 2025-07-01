@@ -27,6 +27,15 @@ namespace PeliculasAPI.Controllers
             this.cacheTag = cacheTag;
         }
 
+        protected async Task<List<TDTO>> Get<TEntidad, TDTO>(
+            Expression<Func<TEntidad, object>> ordenarPor) // usamos la entidad generica y retornamos un objeto, en c# todo tipo de dato hereda de object.
+            where TEntidad : class // restricción para que TEntidad sea una clase
+        {
+                return await context.Set<TEntidad>()
+                    .OrderBy(ordenarPor)
+                    .ProjectTo<TDTO>(mapper.ConfigurationProvider).ToListAsync();
+        }
+
         // Metodo Génerico GET, que retorna todos los objetos de una entidad paginados y ordenados.
         protected async Task<List<TDTO>> Get<TEntidad, TDTO>(PaginacionDTO paginacion,
             Expression<Func<TEntidad, object>> ordenarPor) // usamos la entidad generica y retornamos un objeto, en c# todo tipo de dato hereda de object.
