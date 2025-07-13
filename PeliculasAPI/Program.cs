@@ -71,6 +71,7 @@ builder.Services.AddCors(opciones =>
 // Registramos servicios para subir imagenes en Azure Storage Account o Localmente (Simplemente cambiamos la implementación)
 builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
 
 var app = builder.Build();
 
