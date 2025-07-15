@@ -16,7 +16,7 @@ namespace PeliculasAPI.Controllers
 {
     [ApiController]
     [Route("api/usuarios")]
-    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "esadmin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "esadmin")]
     public class UsuariosController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
