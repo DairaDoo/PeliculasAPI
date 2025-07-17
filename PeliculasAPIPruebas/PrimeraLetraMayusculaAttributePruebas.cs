@@ -27,5 +27,35 @@ namespace PeliculasAPIPruebas
             // Verificar
             Assert.AreEqual(expected: ValidationResult.Success, actual: resultado);
         }
+
+        [TestMethod]
+        [DataRow("Dairan")]
+        public void IsValid_DebeRetornarExitoso_SiLaPrimeraLetraEsMayuscula(string valor)
+        {
+            // Preparar
+            var primeraLetraMayusculaAttribute = new PrimeraLetraMayusculaAttribute();
+            var validationContext = new ValidationContext(new object());
+
+            // Probar
+            var resultado = primeraLetraMayusculaAttribute.GetValidationResult(valor, validationContext);
+
+            // Verificar
+            Assert.AreEqual(expected: ValidationResult.Success, actual: resultado);
+        }
+
+        [TestMethod]
+        [DataRow("dairan")]
+        public void IsValid_DebeRetornarError_SiLaPrimeraLetraNoEsMayuscula(string valor)
+        {
+            // Preparar
+            var primeraLetraMayusculaAttribute = new PrimeraLetraMayusculaAttribute();
+            var validationContext = new ValidationContext(new object());
+
+            // Probar
+            var resultado = primeraLetraMayusculaAttribute.GetValidationResult(valor, validationContext);
+
+            // Verificar
+            Assert.AreEqual(expected: "La primera letra debe ser mayúscula", actual: resultado!.ErrorMessage);
+        }
     }
 }
