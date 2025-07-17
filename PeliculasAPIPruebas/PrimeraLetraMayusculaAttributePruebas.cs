@@ -12,12 +12,14 @@ namespace PeliculasAPIPruebas
     public sealed class PrimeraLetraMayusculaAttributePruebas
     {
         [TestMethod]
-        public void IsValid_DebeRetornarExitoso_SiElValorEsVacio()
+        [DataRow("")]
+        [DataRow("    ")]
+        [DataRow(null)]
+        public void IsValid_DebeRetornarExitoso_SiElValorEsVacio(string valor)
         {
             // Preparar
             var primeraLetraMayusculaAttribute = new PrimeraLetraMayusculaAttribute();
             var validationContext = new ValidationContext(new object());
-            var valor = string.Empty;
 
             // Probar
             var resultado = primeraLetraMayusculaAttribute.GetValidationResult(valor, validationContext);
