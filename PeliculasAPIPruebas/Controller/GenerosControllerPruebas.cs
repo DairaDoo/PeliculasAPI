@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using PeliculasAPI.Controllers;
 using PeliculasAPI.DTOs;
 using PeliculasAPI.Entidades;
@@ -111,7 +112,30 @@ namespace PeliculasAPIPruebas.Controller
             var contexto2 = ConstruirContext(nombreBD);
             var cantidad = await contexto2.Generos.CountAsync();
             Assert.AreEqual(expected: 1, actual: cantidad);
+        }
 
+        // Copia del CacheTag en generosController para evitar errores
+        private const string cacheTag = "generos";
+
+        [TestMethod]
+        public async Task Post_DebeLlamarEvictByTagAsync_CuandoEnviamosGenero()
+        {
+            // Preparación
+            var nombreBD = Guid.NewGuid().ToString();
+            var contexto = ConstruirContext(nombreBD);
+            var mapper = ConfigurarAutoMapper();
+            var outputCacheStore = Substitute.For<IOutputCacheStore>();
+
+            var nuevoGenero = new GeneroCreacionDTO() { Nombre = "Nuevo género" };
+
+            var controller = new GenerosController(outputCacheStore, contexto, mapper);
+
+            // Prueba
+            var respuesta = await controller.Post(nuevoGenero);
+
+            // Verificación
+            // Verificamos que se haya ejecutado una vez usando la libreria NSubstitute
+            await outputCacheStore.Received(1).EvictByTagAsync(cacheTag, default);
         }
     }
 }
