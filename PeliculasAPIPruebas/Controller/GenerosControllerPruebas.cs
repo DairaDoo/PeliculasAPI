@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.OutputCaching;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using PeliculasAPI.Controllers;
 using PeliculasAPI.Entidades;
 using System;
@@ -33,6 +34,55 @@ namespace PeliculasAPIPruebas.Controller
 
             // Verificación
             Assert.AreEqual(expected: 2, actual: respuesta.Count());
+        }
+
+        [TestMethod]
+        public async Task Get_DebeDevolver404_CuandoGeneroConIdNoExiste()
+        {
+            // Preparación
+            var nombreBD = Guid.NewGuid().ToString();
+            var contexto = ConstruirContext(nombreBD);
+            var mapper = ConfigurarAutoMapper();
+            IOutputCacheStore outputCacheStore = null!;
+
+            var controller = new GenerosController(outputCacheStore, contexto, mapper);
+
+
+            var id = 1;
+
+            // Prueba
+            var respuesta = await controller.Get(id);
+
+            // Verificación
+            var resultado = respuesta.Result as StatusCodeResult;
+            Assert.AreEqual(expected: 404, actual: resultado!.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task Get_DebeDevolverGeneroCorrecto_CuandoGeneroConIdExiste()
+        {
+            // Preparación
+            var nombreBD = Guid.NewGuid().ToString();
+            var contexto = ConstruirContext(nombreBD);
+            var mapper = ConfigurarAutoMapper();
+            IOutputCacheStore outputCacheStore = null!;
+
+            contexto.Generos.Add(new Genero() { Nombre = "Género 1" });
+            contexto.Generos.Add(new Genero() { Nombre = "Género 2" });
+            await contexto.SaveChangesAsync();
+
+            var contexto2 = ConstruirContext(nombreBD);
+            var controller = new GenerosController(outputCacheStore, contexto2, mapper);
+
+
+            var id = 1;
+
+            // Prueba
+            var respuesta = await controller.Get(id);
+
+            // Verificación
+            var resultado = respuesta.Value;
+            Assert.AreEqual(expected: id, actual: resultado!.Id);
         }
     }
 }
