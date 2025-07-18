@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Controllers;
+using PeliculasAPI.DTOs;
 using PeliculasAPI.Entidades;
+using PeliculasAPIPruebas.Dobles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +86,32 @@ namespace PeliculasAPIPruebas.Controller
             // Verificación
             var resultado = respuesta.Value;
             Assert.AreEqual(expected: id, actual: resultado!.Id);
+        }
+
+        [TestMethod]
+        public async Task Post_DebeCrearGenero_CuandoEnviamosGenero()
+        {
+            // Preparación
+            var nombreBD = Guid.NewGuid().ToString();
+            var contexto = ConstruirContext(nombreBD);
+            var mapper = ConfigurarAutoMapper();
+            var outputCacheStore = new OutputCacheStoreFalso();
+
+            var nuevoGenero = new GeneroCreacionDTO() { Nombre = "Nuevo género" };
+
+            var controller = new GenerosController(outputCacheStore, contexto, mapper);
+
+            // Prueba
+            var respuesta = await controller.Post(nuevoGenero);
+
+            // Verificación
+            var resultado = respuesta as CreatedAtRouteResult;
+            Assert.IsNotNull(resultado);
+
+            var contexto2 = ConstruirContext(nombreBD);
+            var cantidad = await contexto2.Generos.CountAsync();
+            Assert.AreEqual(expected: 1, actual: cantidad);
+
         }
     }
 }
